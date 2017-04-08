@@ -19,7 +19,8 @@ public class App extends Application {
 		* This is the image path for the background. If you are working from home, 
 		* please change this to a folder (not file!) on your own computer.
 		*/
-		String imagePath = "/course/cs016/lib/convexhull-images/";
+//		String imagePath = "/course/cs016/lib/convexhull-images/";
+		String imagePath = "/Users/Zorro/Pictures/";
 		PaneOrganizer paneOrganizer = new PaneOrganizer(new MyHullFinder(imagePath));
 		Scene scene = new Scene(paneOrganizer.getRoot());
 		stage.setScene(scene);
