@@ -75,12 +75,40 @@ public class MyHullFinder implements ConvexHullFinder {
 		// TODO implement an Incremental Graham Scan
 
 		// update anchor point (helper method)
+		try {
+			updateAnchor();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// insert point
+
+		// calculate angle from anchor
+
+		// determine if left or right turn:
+
+		// if right, remove 2nd to last point from hull, recurse
+		
+		// if left turn, we all good babie
+		
+		//return hull
 
 	}
 
 	/**
-	 * u
+	 * updates anchor points
+	 * 
+	 * @throws Exception
 	 */
+	private void updateAnchor() throws Exception {
+		// if less than three points currently in hull, anchor is first point
+
+		// if more than two, use average of first three points in hull
+
+		// TODO -- test with a lot of points being removed from early in hull
+		throw new Exception("not implemented");
+	}
 
 	/**
 	 * When the user clicks on the "Clear" button, the
