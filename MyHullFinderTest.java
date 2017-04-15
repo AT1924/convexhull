@@ -93,14 +93,19 @@ public class MyHullFinderTest {
 		// statements
 		assertThat(expectedPoints.containsAll(actualPoints), is(true));
 		assertThat(actualPoints.containsAll(expectedPoints), is(true));
-		
-		assert(expectedPoints.containsAll(actualPoints) && actualPoints.containsAll(expectedPoints));
+
+		assert (expectedPoints.containsAll(actualPoints) && actualPoints.containsAll(expectedPoints));
 	}
 
 	/**
 	 * TODO: Write your own tests below! Don't forget to test any helper methods
 	 * you write.
 	 */
+
+	@Test
+	public void testAnchore() {
+		// TODO -- test with a lot of points being removed from early in hull
+	}
 
 	/**
 	 * Below are some helper methods you might find useful for testing. Feel

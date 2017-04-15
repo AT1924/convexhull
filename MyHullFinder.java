@@ -2,6 +2,7 @@ package convexhull;
 
 import support.convexhull.*;
 import net.datastructures.*;
+import support.convexhull.Angle;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -36,7 +37,6 @@ public class MyHullFinder implements ConvexHullFinder {
 
 		_hull = new CircularTree<Angle, HullPoint>(new AngleComparator());
 		_imagePath = imagePath;
-		
 
 		// TODO initalize any other instance variables you use
 
@@ -72,49 +72,58 @@ public class MyHullFinder implements ConvexHullFinder {
 	 * @param vertex
 	 *            the newly created vertex resulting from a user click
 	 */
-
 	public void insertIncremental(HullPoint vertex) {
 		// TODO implement an Incremental Graham Scan
 
 		// update anchor point (helper method)
-		
-			updateAnchor(vertex);
-		
-			
-		
+
+		updateAnchor(vertex);
 
 		// calculate angle from anchor
-			
-		// insert point into circ tree
-			
+		Angle angle = calcAngle(vertex);
+
+		// insert point into circular tree
+
+		updateHull(vertex);
+	}
+
+	/**
+	 * 
+	 */
+	private void updateHull(HullPoint vertex) {
 		// determine if left or right turn, might have to recurse:
 
 		// if right, remove 2nd to last point from hull, recurse
-		
-		// if left turn, we all good babie
-		
-		//return hull
 
+		// if left turn, we all good babie
+	}
+
+	/**
+	 * 
+	 */
+	private Angle calcAngle(HullPoint vertex) {
+		// TODO -- do the math
+		return null;
 	}
 
 	/**
 	 * updates anchor points
 	 * 
-	 * 
 	 */
 	private void updateAnchor(HullPoint vertex) {
 		// if less than three points currently in hull, anchor is first point
-		if (_hull.size() == 0){
+		if (_hull.size() == 0) {
 			_anchor = vertex;
 		}
-		
+
 		// if more than two, use average of first three points in hull
-		if (_hull.size() == 2){
-			// average the points using vertex 
+		if (_hull.size() == 2) {
+			// average the points using vertex
+			// first two points are in hull --> get root, root->next() of
+			// CircularTree
+			// third point is "vertex"
 		}
 
-		// TODO -- test with a lot of points being removed from early in hull
-		
 	}
 
 	/**
