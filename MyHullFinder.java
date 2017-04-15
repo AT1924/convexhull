@@ -25,6 +25,7 @@ public class MyHullFinder implements ConvexHullFinder {
 	private CircularTree<Angle, HullPoint> _hull;
 
 	private String _imagePath;
+	private HullPoint _anchor;
 
 	public MyHullFinder(String imagePath) {
 		/*
@@ -35,6 +36,7 @@ public class MyHullFinder implements ConvexHullFinder {
 
 		_hull = new CircularTree<Angle, HullPoint>(new AngleComparator());
 		_imagePath = imagePath;
+		
 
 		// TODO initalize any other instance variables you use
 
@@ -75,18 +77,17 @@ public class MyHullFinder implements ConvexHullFinder {
 		// TODO implement an Incremental Graham Scan
 
 		// update anchor point (helper method)
-		try {
-			updateAnchor();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// insert point
+		
+			updateAnchor(vertex);
+		
+			
+		
 
 		// calculate angle from anchor
-
-		// determine if left or right turn:
+			
+		// insert point into circ tree
+			
+		// determine if left or right turn, might have to recurse:
 
 		// if right, remove 2nd to last point from hull, recurse
 		
@@ -99,15 +100,21 @@ public class MyHullFinder implements ConvexHullFinder {
 	/**
 	 * updates anchor points
 	 * 
-	 * @throws Exception
+	 * 
 	 */
-	private void updateAnchor() throws Exception {
+	private void updateAnchor(HullPoint vertex) {
 		// if less than three points currently in hull, anchor is first point
-
+		if (_hull.size() == 0){
+			_anchor = vertex;
+		}
+		
 		// if more than two, use average of first three points in hull
+		if (_hull.size() == 2){
+			// average the points using vertex 
+		}
 
 		// TODO -- test with a lot of points being removed from early in hull
-		throw new Exception("not implemented");
+		
 	}
 
 	/**
