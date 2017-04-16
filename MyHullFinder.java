@@ -82,39 +82,56 @@ public class MyHullFinder implements ConvexHullFinder {
 		// calculate angle from anchor
 		Angle angle = calcAngle(vertex);
 
-		// insert point into circular tree
-
+		// insert point into circular tree, update hull
 		updateHull(vertex);
 	}
 
 	/**
 	 * 
+	 * @param vertex
 	 */
 	private void updateHull(HullPoint vertex) {
-		// determine if left or right turn, might have to recurse:
+		// edge case: if < 4 points in hull, just add vertex to hull
 
-		// if right, remove 2nd to last point from hull, recurse
+		// get previous two points
 
-		// if left turn, we all good babie
+		// if right turn or collinear, remove previous point from hull
+
+		// repeat until no points removed, or only 3 points left in hull
+	}
+
+	public Boolean isLeftTurn(HullPoint first, HullPoint second, HullPoint third) {
+		// return (b.x - a.x)×(c.y - a.y)–(b.y - a.y)×(c.x - a.x) > 0
+		return true;
 	}
 
 	/**
 	 * 
+	 * @param vertex
+	 * @return
 	 */
 	private Angle calcAngle(HullPoint vertex) {
 		return new Angle(vertex.getX() - _anchor.getX(), vertex.getY() - _anchor.getY());
 	}
 
-	private Boolean isCollinear(HullPoint a, HullPoint b, HullPoint c){
-		// all have same y, all have different x and y, use point with smallest x
-		if ((a.getY() == b.getY() && b.getY() == c.getY()) ||
-		(a.getX() == b.getX() && b.getX() == c.getX())){
-			return true;
-		}
-		
-	
-		 Angle angle1 = new Angle()
-		return false;
+	/**
+	 * 
+	 * @param a
+	 * @param b
+	 * @param c
+	 * @return
+	 */
+	private Boolean isCollinear(HullPoint a, HullPoint b, HullPoint c) {
+		// all have same y, all have different x and y, use point with smallest
+		// x
+		// if ((a.getY() == b.getY() && b.getY() == c.getY()) ||
+		// (a.getX() == b.getX() && b.getX() == c.getX())){
+		// return true;
+		// }
+		//
+		//
+		// Angle angle1 = new Angle()
+		return true;
 	}
 
 	/**
@@ -136,13 +153,11 @@ public class MyHullFinder implements ConvexHullFinder {
 			x = Math.round(x);
 			double y = (first.getY() + second.getY() + vertex.getY()) / 3;
 			y = Math.round(y);
+
+			// set anchor
 			_anchor = new HullPoint();
 			_anchor.setX((int) x);
 			_anchor.setY((int) y);
-
-			// first two points are in hull --> get root, root->next() of
-			// CircularTree
-			// third point is "vertex"
 		}
 
 	}
