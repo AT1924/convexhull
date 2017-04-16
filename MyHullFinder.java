@@ -102,8 +102,19 @@ public class MyHullFinder implements ConvexHullFinder {
 	 * 
 	 */
 	private Angle calcAngle(HullPoint vertex) {
-		// TODO -- do the math
-		return null;
+		return new Angle(vertex.getX() - _anchor.getX(), vertex.getY() - _anchor.getY());
+	}
+
+	private Boolean isCollinear(HullPoint a, HullPoint b, HullPoint c){
+		// all have same y, all have different x and y, use point with smallest x
+		if ((a.getY() == b.getY() && b.getY() == c.getY()) ||
+		(a.getX() == b.getX() && b.getX() == c.getX())){
+			return true;
+		}
+		
+	
+		 Angle angle1 = new Angle()
+		return false;
 	}
 
 	/**
@@ -119,6 +130,16 @@ public class MyHullFinder implements ConvexHullFinder {
 		// if more than two, use average of first three points in hull
 		if (_hull.size() == 2) {
 			// average the points using vertex
+			HullPoint first = _hull.first().getValue();
+			HullPoint second = _hull.after(_hull.first()).getValue();
+			double x = (first.getX() + second.getX() + vertex.getX()) / 3;
+			x = Math.round(x);
+			double y = (first.getY() + second.getY() + vertex.getY()) / 3;
+			y = Math.round(y);
+			_anchor = new HullPoint();
+			_anchor.setX((int) x);
+			_anchor.setY((int) y);
+
 			// first two points are in hull --> get root, root->next() of
 			// CircularTree
 			// third point is "vertex"
