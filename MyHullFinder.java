@@ -2,7 +2,6 @@ package convexhull;
 
 import support.convexhull.*;
 import net.datastructures.*;
-import support.convexhull.Angle;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -92,16 +91,36 @@ public class MyHullFinder implements ConvexHullFinder {
 	 */
 	private void updateHull(HullPoint vertex) {
 		// edge case: if < 4 points in hull, just add vertex to hull
+		Angle angleToAnchor = calcAngle(vertex);
+		if (_hull.size() < 4) {
+			_hull.insert(calcAngle(vertex), vertex);
+		}
+		
+		else {
+			// insert point with key angle and value of point
+			// angle can be calculated from angle method
+			Entry<Angle, HullPoint> latest = _hull.insert(angleToAnchor, vertex);
+			// get previous two points
+			// how to get prev two points? they are values
+			// use entries because you can just get the angle and hullpoint using
+			// getters
+			Entry<Angle, HullPoint> prev1 = _hull.before(latest);
+			Entry<Angle, HullPoint> prev2 = _hull.before(prev1);
 
-		// get previous two points
+			// if right turn or collinear, remove previous point from hull
+			// what is the order in which points are passed into isLeftTurn()??
+			// make sure to test if collinear!!!
+			if (!isLeftTurn(latest.getValue(), prev1.getValue(), prev2.getValue())) {
+				_hull.remove(_hull.last());
+			}
 
-		// if right turn or collinear, remove previous point from hull
-
-		// repeat until no points removed, or only 3 points left in hull
+			// repeat until no points removed, or only 3 points left in hull
+			updateHull(_hull.last().getValue());
+		}
 	}
 
 	public Boolean isLeftTurn(HullPoint first, HullPoint second, HullPoint third) {
-		// return (b.x - a.x)×(c.y - a.y)–(b.y - a.y)×(c.x - a.x) > 0
+		// return (second.x - first.x)×(third.y - first.y)–(second.y - first.y)×(third.x - first.x) > 0
 		return true;
 	}
 
