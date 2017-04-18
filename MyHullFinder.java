@@ -181,8 +181,9 @@ public class MyHullFinder implements ConvexHullFinder {
 	}
 
 	/**
-	 * updates anchor points
-	 * 
+	 * updates anchor point. If the hull has 0 points, the anchor is the passed in point. If the
+	 * hull has 3 or more points in it, then the anchor is found by the average of the first three points
+	 * @param vertex
 	 */
 	private void updateAnchor(HullPoint vertex) {
 		// if less than three points currently in hull, anchor is first point
@@ -191,6 +192,7 @@ public class MyHullFinder implements ConvexHullFinder {
 		}
 
 		// if more than two, use average of first three points in hull
+		// make sure to reinsert the values with new angles into hull
 		if (_hull.size() == 2) {
 			// average the points using vertex
 			HullPoint first = _hull.first().getValue();
@@ -204,6 +206,17 @@ public class MyHullFinder implements ConvexHullFinder {
 			_anchor = new HullPoint();
 			_anchor.setX((int) x);
 			_anchor.setY((int) y);
+			
+			// recalculates the angle of the points with respect to new anchor 
+			Entry<Angle, HullPoint> firstEntry = _hull.first();
+			Entry<Angle, HullPoint> secondEntry = _hull.first();
+			// there probably is a better way to do this than to delete the entries 
+			_hull.remove(firstEntry);
+			_hull.remove(secondEntry);
+			// test that _hull is empty here
+			_hull.insert(calcAngle(firstEntry.getValue()), firstEntry.getValue());
+			_hull.insert(calcAngle(secondEntry.getValue()), secondEntry.getValue());
+			
 		}
 
 	}
