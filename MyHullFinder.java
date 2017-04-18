@@ -93,9 +93,15 @@ public class MyHullFinder implements ConvexHullFinder {
 			// angle can be calculated from angle method
 			Entry<Angle, HullPoint> latest = _hull.insert(angleToAnchor, vertex);
 
-			//TODO -- get before and after points, and possibley delete point
-			//if deleted, hull does not change, so return 
-			
+			// TODO -- get before and after points, and possibly delete point
+			// if deleted, hull does not change, so return
+			Entry<Angle, HullPoint> beforeLatest = _hull.before(latest);
+			Entry<Angle, HullPoint> afterLatest = _hull.after(latest);
+			if (clockwiseOrCollinear(beforeLatest.getValue(), latest.getValue(), afterLatest.getValue())) {
+				_hull.remove(latest);
+				return;
+			}
+
 			// get previous two entries
 			Entry<Angle, HullPoint> prev1 = _hull.before(latest);
 			Entry<Angle, HullPoint> prev2 = _hull.before(prev1);
@@ -110,11 +116,21 @@ public class MyHullFinder implements ConvexHullFinder {
 			}
 
 			// TODO
-			// need to make latest point 1st of 3 points to consider, and update looking forward
-			// make sure you actually have the points to consider (there are points left)
+			// need to make latest point 1st of 3 points to consider, and update
+			// looking forward
+			// make sure you actually have the points to consider (there are
+			// points left)
 			prev1 = latest;
 			prev2 = _hull.after(latest);
 			latest = _hull.after(prev2);
+			while (clockwiseOrCollinear(prev1.getValue(), prev2.getValue(), latest.getValue()) && _hull.size() > 3
+					&& prev2 != null) {
+				// remove middle point
+				_hull.remove(prev2);
+				// keep removing middle point while clockwiseOrCollinear
+				prev2 = latest;
+				latest = _hull.after(latest);
+			}
 		}
 	}
 

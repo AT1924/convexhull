@@ -103,9 +103,16 @@ public class MyHullFinderTest {
 	 */
 
 	@Test
-	public void testAnchore() {
+	public void testUpdateAnchor() {
 		// TODO -- test with a lot of points being removed from early in hull
 	}
+	
+	@Test
+	public void testClockwiseOrCollinear(){
+		// TODO test that this method actually produces what we want 
+	}
+	
+	
 
 	/**
 	 * Below are some helper methods you might find useful for testing. Feel
