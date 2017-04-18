@@ -20,8 +20,8 @@ public class App extends Application {
 		* please change this to a folder (not file!) on your own computer.
 		*/
 //		String imagePath = "/course/cs016/lib/convexhull-images/";
-		String imagePath = "/Users/Zorro/Pictures/";
-//		String imagePath = "/Users/Akhil/Desktop/CS_PICS";
+//		String imagePath = "/Users/Zorro/Pictures/";
+		String imagePath = "/Users/Akhil/Desktop/CS_PICS";
 		PaneOrganizer paneOrganizer = new PaneOrganizer(new MyHullFinder(imagePath));
 		Scene scene = new Scene(paneOrganizer.getRoot());
 		stage.setScene(scene);

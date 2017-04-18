@@ -44,7 +44,8 @@ public class MyHullFinderTest {
 
 	public MyHullFinderTest() {
 		// _imagePath = "/course/cs016/lib/convexhull-images/";
-		String imagePath = "/Users/Zorro/Pictures/";
+		//String imagePath = "/Users/Zorro/Pictures/";
+		String imagePath = "/Users/Akhil/Desktop/CS_PICS";
 
 	}
 
@@ -105,6 +106,7 @@ public class MyHullFinderTest {
 	@Test
 	public void testUpdateAnchor() {
 		// TODO -- test with a lot of points being removed from early in hull
+		
 	}
 	
 	@Test

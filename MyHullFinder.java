@@ -80,10 +80,113 @@ public class MyHullFinder implements ConvexHullFinder {
 	}
 
 	/**
+	 * When the user clicks on the "Clear" button, the
+	 * <code>HullVisualizer</code> class will call this method.
+	 * 
+	 * <p>
+	 * Do not call this method explicitly! The visualizer does this!
+	 */
+	public void clear() {
+		// TODO clear your instance variables
+		_hull = null;
+		_anchor = null;
+	}
+
+	/**
+	 * @return an <code>Iterator</code> containing all the
+	 *         <code>A_HullPoint</code>s in the upper chain of the hull
+	 */
+	public Iterator<Entry<Angle, HullPoint>> hull() {
+		return _hull.iterator();
+	}
+
+	/**
+	 * Gets the image path for the background. Please do not change this!
+	 */
+	public String getImagePath() {
+		return _imagePath;
+	}
+
+	/**
+	 * When the "Solve" button is clicked this method is called to invoke a
+	 * static graham scan.
+	 *
+	 * Note: It is probably a good idea to 'sort' the points by angle using some
+	 * sort of data structure that uses keys to keep track of the minimum.
+	 *
+	 */
+	public void angularGrahamScan(ArrayList<HullPoint> vertices) {
+		// TODO implement a static GrahamScan (optional, for extra credit)
+	}
+
+	/*
+	 * You may find it useful to add some helper methods here. Think about
+	 * actions that may be executed often in the rest of your code. Writing
+	 * helper methods instead of copying and pasting helps "segment" your code,
+	 * makes it easier to understand, and avoids problems in keeping each
+	 * occurance "up-to-date."
+	 */
+
+	/**
+	 * calculates the angle between a point and the anchor point
+	 * 
+	 * @param vertex
+	 * @return
+	 */
+	public Angle calcAngle(HullPoint vertex) {
+		return new Angle(vertex.getX() - _anchor.getX(), vertex.getY() - _anchor.getY());
+	}
+
+	/**
+	 * updates anchor point. If the hull has 0 points, the anchor is the passed
+	 * in point. If the hull has 3 or more points in it, then the anchor is
+	 * found by the average of the first three points
 	 * 
 	 * @param vertex
 	 */
-	private void updateHull(HullPoint vertex) {
+	public void updateAnchor(HullPoint vertex) {
+		// if less than three points currently in hull, anchor is first point
+		if (_hull.size() == 0) {
+			_anchor = vertex;
+		}
+
+		// if more than two, use average of first three points in hull
+		// make sure to reinsert the values with new angles into hull
+		if (_hull.size() == 2) {
+			// average the points using vertex
+			HullPoint first = _hull.first().getValue();
+			HullPoint second = _hull.after(_hull.first()).getValue();
+			double x = (first.getX() + second.getX() + vertex.getX()) / 3;
+			x = Math.round(x);
+			double y = (first.getY() + second.getY() + vertex.getY()) / 3;
+			y = Math.round(y);
+
+			// set anchor
+			_anchor = new HullPoint();
+			_anchor.setX((int) x);
+			_anchor.setY((int) y);
+
+			// recalculates the angle of the points with respect to new anchor
+			Entry<Angle, HullPoint> firstEntry = _hull.first();
+			Entry<Angle, HullPoint> secondEntry = _hull.first();
+			// there probably is a better way to do this than to delete the
+			// entries
+			_hull.remove(firstEntry);
+			_hull.remove(secondEntry);
+			// test that _hull is empty here
+			if (calcAngle(firstEntry.getValue()).compareTo(calcAngle(secondEntry.getValue())) <= 0) {
+				_hull.insert(calcAngle(firstEntry.getValue()), firstEntry.getValue());
+				_hull.insert(calcAngle(secondEntry.getValue()), secondEntry.getValue());
+			} else {
+				_hull.insert(calcAngle(secondEntry.getValue()), secondEntry.getValue());
+				_hull.insert(calcAngle(firstEntry.getValue()), firstEntry.getValue());
+			}
+
+		}
+
+	}
+
+	public void updateHull(HullPoint vertex) {
 		// edge case: if < 4 points in hull, just add vertex to hull
 		Angle angleToAnchor = calcAngle(vertex);
 		if (_hull.size() < 4) {
@@ -156,7 +259,7 @@ public class MyHullFinder implements ConvexHullFinder {
 	 * @param third
 	 * @return
 	 */
-	private int orientation(HullPoint first, HullPoint second, HullPoint third) {
+	public int orientation(HullPoint first, HullPoint second, HullPoint third) {
 		// orientation test, if counterclockwise return 1, -1 for clockwise and
 		// 0 for collinear
 		int x1 = (second.getX() - first.getX()) * (third.getY() - first.getY());
@@ -176,23 +279,13 @@ public class MyHullFinder implements ConvexHullFinder {
 	}
 
 	/**
-	 * calculates the angle between a point and the anchor point
-	 * 
-	 * @param vertex
-	 * @return
-	 */
-	private Angle calcAngle(HullPoint vertex) {
-		return new Angle(vertex.getX() - _anchor.getX(), vertex.getY() - _anchor.getY());
-	}
-
-	/**
 	 * 
 	 * @param a
 	 * @param b
 	 * @param c
 	 * @return
 	 */
-	private Boolean isCollinear(HullPoint a, HullPoint b, HullPoint c) {
+	public Boolean isCollinear(HullPoint a, HullPoint b, HullPoint c) {
 		// all have same y, all have different x and y, use point with smallest
 		// x
 		// if ((a.getY() == b.getY() && b.getY() == c.getY()) ||
@@ -204,100 +297,5 @@ public class MyHullFinder implements ConvexHullFinder {
 		// Angle angle1 = new Angle()
 		return true;
 	}
-
-	/**
-	 * updates anchor point. If the hull has 0 points, the anchor is the passed
-	 * in point. If the hull has 3 or more points in it, then the anchor is
-	 * found by the average of the first three points
-	 * 
-	 * @param vertex
-	 */
-	private void updateAnchor(HullPoint vertex) {
-		// if less than three points currently in hull, anchor is first point
-		if (_hull.size() == 0) {
-			_anchor = vertex;
-		}
-
-		// if more than two, use average of first three points in hull
-		// make sure to reinsert the values with new angles into hull
-		if (_hull.size() == 2) {
-			// average the points using vertex
-			HullPoint first = _hull.first().getValue();
-			HullPoint second = _hull.after(_hull.first()).getValue();
-			double x = (first.getX() + second.getX() + vertex.getX()) / 3;
-			x = Math.round(x);
-			double y = (first.getY() + second.getY() + vertex.getY()) / 3;
-			y = Math.round(y);
-
-			// set anchor
-			_anchor = new HullPoint();
-			_anchor.setX((int) x);
-			_anchor.setY((int) y);
-
-			// recalculates the angle of the points with respect to new anchor
-			Entry<Angle, HullPoint> firstEntry = _hull.first();
-			Entry<Angle, HullPoint> secondEntry = _hull.first();
-			// there probably is a better way to do this than to delete the
-			// entries
-			_hull.remove(firstEntry);
-			_hull.remove(secondEntry);
-			// test that _hull is empty here
-			if (calcAngle(firstEntry.getValue()).compareTo(calcAngle(secondEntry.getValue())) <= 0) {
-				_hull.insert(calcAngle(firstEntry.getValue()), firstEntry.getValue());
-				_hull.insert(calcAngle(secondEntry.getValue()), secondEntry.getValue());
-			} else {
-				_hull.insert(calcAngle(secondEntry.getValue()), secondEntry.getValue());
-				_hull.insert(calcAngle(firstEntry.getValue()), firstEntry.getValue());
-			}
-
-		}
-
-	}
-
-	/**
-	 * When the user clicks on the "Clear" button, the
-	 * <code>HullVisualizer</code> class will call this method.
-	 * 
-	 * <p>
-	 * Do not call this method explicitly! The visualizer does this!
-	 */
-	public void clear() {
-		// TODO clear your instance variables
-	}
-
-	/**
-	 * @return an <code>Iterator</code> containing all the
-	 *         <code>A_HullPoint</code>s in the upper chain of the hull
-	 */
-	public Iterator<Entry<Angle, HullPoint>> hull() {
-		return _hull.iterator();
-	}
-
-	/**
-	 * Gets the image path for the background. Please do not change this!
-	 */
-	public String getImagePath() {
-		return _imagePath;
-	}
-
-	/**
-	 * When the "Solve" button is clicked this method is called to invoke a
-	 * static graham scan.
-	 *
-	 * Note: It is probably a good idea to 'sort' the points by angle using some
-	 * sort of data structure that uses keys to keep track of the minimum.
-	 *
-	 */
-	public void angularGrahamScan(ArrayList<HullPoint> vertices) {
-		// TODO implement a static GrahamScan (optional, for extra credit)
-	}
-
-	/*
-	 * You may find it useful to add some helper methods here. Think about
-	 * actions that may be executed often in the rest of your code. Writing
-	 * helper methods instead of copying and pasting helps "segment" your code,
-	 * makes it easier to understand, and avoids problems in keeping each
-	 * occurance "up-to-date."
-	 */
 
 }
