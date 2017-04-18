@@ -116,43 +116,47 @@ public class MyHullFinder implements ConvexHullFinder {
 				_hull.remove(_hull.last());
 			}
 			// check for collinearity
-			if (orientation == 0){
-				// only use the last 2 points of collinear points 
+			if (orientation == 0) {
+				// only use the last 2 points of collinear points
 			}
 
 			// repeat until no points removed, or only 3 points left in hull
 			updateHull(_hull.last().getValue());
 		}
 	}
+
 	/**
-	 * calculates the orientation of a set of 3 points, which are the parameters. 
-	 * If the orientation is counter-clockwise returns 1, clockwise returns -1, and 
-	 * collinear returns 0.
+	 * calculates the orientation of a set of 3 points, which are the
+	 * parameters. If the orientation is counter-clockwise returns 1, clockwise
+	 * returns -1, and collinear returns 0.
+	 * 
 	 * @param first
 	 * @param second
 	 * @param third
 	 * @return
 	 */
 	private int orientation(HullPoint first, HullPoint second, HullPoint third) {
-		// orientation test, if counterclockwise return 1, -1 for clockwise and 0 for collinear
-		int x1 = (second.getX() - first.getX())*(third.getY() - first.getY());
-		int y1 = (second.getY() - first.getY())*(third.getX() - first.getX());
-		if ((x1-y1) > 0){
+		// orientation test, if counterclockwise return 1, -1 for clockwise and
+		// 0 for collinear
+		int x1 = (second.getX() - first.getX()) * (third.getY() - first.getY());
+		int y1 = (second.getY() - first.getY()) * (third.getX() - first.getX());
+		if ((x1 - y1) > 0) {
 			return 1;
 		}
-		
-		else if ((x1-y1) < 0){
+
+		else if ((x1 - y1) < 0) {
 			return -1;
 		}
-		
-		else{
+
+		else {
 			return 0;
 		}
-		
+
 	}
 
 	/**
-	 * calculates the angle between a point and the anchor point 
+	 * calculates the angle between a point and the anchor point
+	 * 
 	 * @param vertex
 	 * @return
 	 */
@@ -181,8 +185,10 @@ public class MyHullFinder implements ConvexHullFinder {
 	}
 
 	/**
-	 * updates anchor point. If the hull has 0 points, the anchor is the passed in point. If the
-	 * hull has 3 or more points in it, then the anchor is found by the average of the first three points
+	 * updates anchor point. If the hull has 0 points, the anchor is the passed
+	 * in point. If the hull has 3 or more points in it, then the anchor is
+	 * found by the average of the first three points
+	 * 
 	 * @param vertex
 	 */
 	private void updateAnchor(HullPoint vertex) {
@@ -206,17 +212,23 @@ public class MyHullFinder implements ConvexHullFinder {
 			_anchor = new HullPoint();
 			_anchor.setX((int) x);
 			_anchor.setY((int) y);
-			
-			// recalculates the angle of the points with respect to new anchor 
+
+			// recalculates the angle of the points with respect to new anchor
 			Entry<Angle, HullPoint> firstEntry = _hull.first();
 			Entry<Angle, HullPoint> secondEntry = _hull.first();
-			// there probably is a better way to do this than to delete the entries 
+			// there probably is a better way to do this than to delete the
+			// entries
 			_hull.remove(firstEntry);
 			_hull.remove(secondEntry);
 			// test that _hull is empty here
-			_hull.insert(calcAngle(firstEntry.getValue()), firstEntry.getValue());
-			_hull.insert(calcAngle(secondEntry.getValue()), secondEntry.getValue());
-			
+			if (calcAngle(firstEntry.getValue()).compareTo(calcAngle(secondEntry.getValue())) <= 0) {
+				_hull.insert(calcAngle(firstEntry.getValue()), firstEntry.getValue());
+				_hull.insert(calcAngle(secondEntry.getValue()), secondEntry.getValue());
+			} else {
+				_hull.insert(calcAngle(secondEntry.getValue()), secondEntry.getValue());
+				_hull.insert(calcAngle(firstEntry.getValue()), firstEntry.getValue());
+			}
+
 		}
 
 	}
