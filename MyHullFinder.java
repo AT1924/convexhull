@@ -72,14 +72,8 @@ public class MyHullFinder implements ConvexHullFinder {
 	 *            the newly created vertex resulting from a user click
 	 */
 	public void insertIncremental(HullPoint vertex) {
-		// TODO implement an Incremental Graham Scan
-
 		// update anchor point (helper method)
-
 		updateAnchor(vertex);
-
-		// calculate angle from anchor
-		Angle angle = calcAngle(vertex);
 
 		// insert point into circular tree, update hull
 		updateHull(vertex);
@@ -94,9 +88,7 @@ public class MyHullFinder implements ConvexHullFinder {
 		Angle angleToAnchor = calcAngle(vertex);
 		if (_hull.size() < 4) {
 			_hull.insert(calcAngle(vertex), vertex);
-		}
-
-		else {
+		} else {
 			// insert point with key angle and value of point
 			// angle can be calculated from angle method
 			Entry<Angle, HullPoint> latest = _hull.insert(angleToAnchor, vertex);
@@ -104,23 +96,6 @@ public class MyHullFinder implements ConvexHullFinder {
 			// get previous two entries
 			Entry<Angle, HullPoint> prev1 = _hull.before(latest);
 			Entry<Angle, HullPoint> prev2 = _hull.before(prev1);
-
-			// if right turn or collinear, remove previous point from hull
-			// make sure to test if collinear!!!
-			// int orientation = orientation(latest.getValue(),
-			// prev1.getValue(), prev2.getValue());
-			// if (orientation == -1) {
-			//// _hull.remove(_hull.last());
-			// }
-			// // check for collinearity
-			// if (orientation == 0) {
-			// // only use the last 2 points of collinear points
-			// }
-			//
-			// if (orientation != -1){
-			// //delete middle point
-			// }
-
 
 			// while last point is collinear or clockwise from penultimate point
 			while ((clockwiseOrCollinear(prev2.getValue(), prev1.getValue(), latest.getValue())) && _hull.size() > 3) {
