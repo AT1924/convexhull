@@ -100,28 +100,43 @@ public class MyHullFinder implements ConvexHullFinder {
 			// insert point with key angle and value of point
 			// angle can be calculated from angle method
 			Entry<Angle, HullPoint> latest = _hull.insert(angleToAnchor, vertex);
-			// get previous two points
-			// how to get prev two points? they are values
-			// use entries because you can just get the angle and hullpoint
-			// using
-			// getters
+
+			// get previous two entries
 			Entry<Angle, HullPoint> prev1 = _hull.before(latest);
 			Entry<Angle, HullPoint> prev2 = _hull.before(prev1);
 
 			// if right turn or collinear, remove previous point from hull
-			// what is the order in which points are passed into isLeftTurn()??
 			// make sure to test if collinear!!!
-			int orientation = orientation(latest.getValue(), prev1.getValue(), prev2.getValue());
-			if (orientation == -1) {
-				_hull.remove(_hull.last());
-			}
-			// check for collinearity
-			if (orientation == 0) {
-				// only use the last 2 points of collinear points
+			// int orientation = orientation(latest.getValue(),
+			// prev1.getValue(), prev2.getValue());
+			// if (orientation == -1) {
+			//// _hull.remove(_hull.last());
+			// }
+			// // check for collinearity
+			// if (orientation == 0) {
+			// // only use the last 2 points of collinear points
+			// }
+			//
+			// if (orientation != -1){
+			// //delete middle point
+			// }
+
+			if (!isCounterClockwise(prev2.getValue(), prev1.getValue(), latest.getValue())) {
+				// remove middle point
+
+				// keep removing middle point
 			}
 
 			// repeat until no points removed, or only 3 points left in hull
 			updateHull(_hull.last().getValue());
+		}
+	}
+
+	public boolean isCounterClockwise(HullPoint first, HullPoint second, HullPoint third) {
+		if (orientation(first, second, third) == 1) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 
