@@ -178,8 +178,7 @@ public class MyHullFinderTest {
 		third.setY(100);
 		
 		assertEquals(false, hull.clockwiseOrCollinear(first, second, third));
-		
-		
+		//TODO -- must test true case as well
 	}
 	
 	
