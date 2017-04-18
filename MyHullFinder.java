@@ -95,14 +95,15 @@ public class MyHullFinder implements ConvexHullFinder {
 		if (_hull.size() < 4) {
 			_hull.insert(calcAngle(vertex), vertex);
 		}
-		
+
 		else {
 			// insert point with key angle and value of point
 			// angle can be calculated from angle method
 			Entry<Angle, HullPoint> latest = _hull.insert(angleToAnchor, vertex);
 			// get previous two points
 			// how to get prev two points? they are values
-			// use entries because you can just get the angle and hullpoint using
+			// use entries because you can just get the angle and hullpoint
+			// using
 			// getters
 			Entry<Angle, HullPoint> prev1 = _hull.before(latest);
 			Entry<Angle, HullPoint> prev2 = _hull.before(prev1);
@@ -110,22 +111,48 @@ public class MyHullFinder implements ConvexHullFinder {
 			// if right turn or collinear, remove previous point from hull
 			// what is the order in which points are passed into isLeftTurn()??
 			// make sure to test if collinear!!!
-			if (!isLeftTurn(latest.getValue(), prev1.getValue(), prev2.getValue())) {
+			int orientation = orientation(latest.getValue(), prev1.getValue(), prev2.getValue());
+			if (orientation == -1) {
 				_hull.remove(_hull.last());
+			}
+			// check for collinearity
+			if (orientation == 0){
+				// only use the last 2 points of collinear points 
 			}
 
 			// repeat until no points removed, or only 3 points left in hull
 			updateHull(_hull.last().getValue());
 		}
 	}
-
-	public Boolean isLeftTurn(HullPoint first, HullPoint second, HullPoint third) {
-		// return (second.x - first.x)×(third.y - first.y)–(second.y - first.y)×(third.x - first.x) > 0
-		return true;
+	/**
+	 * calculates the orientation of a set of 3 points, which are the parameters. 
+	 * If the orientation is counter-clockwise returns 1, clockwise returns -1, and 
+	 * collinear returns 0.
+	 * @param first
+	 * @param second
+	 * @param third
+	 * @return
+	 */
+	private int orientation(HullPoint first, HullPoint second, HullPoint third) {
+		// orientation test, if counterclockwise return 1, -1 for clockwise and 0 for collinear
+		int x1 = (second.getX() - first.getX())*(third.getY() - first.getY());
+		int y1 = (second.getY() - first.getY())*(third.getX() - first.getX());
+		if ((x1-y1) > 0){
+			return 1;
+		}
+		
+		else if ((x1-y1) < 0){
+			return -1;
+		}
+		
+		else{
+			return 0;
+		}
+		
 	}
 
 	/**
-	 * 
+	 * calculates the angle between a point and the anchor point 
 	 * @param vertex
 	 * @return
 	 */
