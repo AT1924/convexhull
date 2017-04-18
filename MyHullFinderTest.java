@@ -1,6 +1,7 @@
 package convexhull;
 
 import static org.junit.Assert.*;
+
 import static org.hamcrest.CoreMatchers.is;
 
 import java.util.ArrayList;
@@ -12,6 +13,8 @@ import org.junit.Test;
 
 import net.datastructures.Entry;
 import support.convexhull.Angle;
+import support.convexhull.AngleComparator;
+import support.convexhull.CircularTree;
 import support.convexhull.HullPoint;
 
 /**
@@ -106,12 +109,77 @@ public class MyHullFinderTest {
 	@Test
 	public void testUpdateAnchor() {
 		// TODO -- test with a lot of points being removed from early in hull
+		MyHullFinder hull = new MyHullFinder(_imagePath);
+		
+		// test that the anchor becomes the first point with a hull of less than 3 points 
+		HullPoint point1 = new HullPoint();
+		point1.setX(30);
+		point1.setY(60);
+		hull.updateAnchor(point1);
+		assertEquals(point1, hull.get_anchor());
+		// because insertion happens in updateHull insert point 
+		hull.get_hull().insert(hull.calcAngle(point1), point1);
+		Angle point1ToAnchor = hull.calcAngle(point1);
+		
+		
+		// insert 2nd point and check for changes
+		HullPoint point2 = new HullPoint();
+		point2.setX(40);
+		point2.setY(70);
+		hull.get_hull().insert(hull.calcAngle(point2), point2);
+		Angle point2ToAnchor = hull.calcAngle(point2);
+		
+		
+		// check again that anchor is expected when another point has been added
+		assertEquals(point1,hull.get_anchor());
+		
+		// test that after 3 points the anchor becomes the average of the 3 points 
+		HullPoint point3 = new HullPoint();
+		point3.setX(50);
+		point3.setY(80);
+		
+		hull.updateAnchor(point3);
+		
+		
+		HullPoint avgAnchor = new HullPoint();
+		avgAnchor.setX(40);
+		avgAnchor.setY(70);
+		
+		assertEquals(avgAnchor, hull.get_anchor());
+
+		// test that the angles of the points have been changed with relation to the anchor
+		assertTrue(point1ToAnchor != hull.calcAngle(point1));
+		// new point1 angle = Angle(-10,-10), original was (0,0)
+		assertTrue(point1ToAnchor.getX()-10 == hull.calcAngle(point1).getX());
+		assertTrue(point1ToAnchor.getY()-10 == hull.calcAngle(point1).getY());
+		
+		assertTrue(point2ToAnchor != hull.calcAngle(point2));
+		
+		
+		
 		
 	}
 	
 	@Test
 	public void testClockwiseOrCollinear(){
 		// TODO test that this method actually produces what we want 
+		MyHullFinder hull = new MyHullFinder(_imagePath);
+		// these points are from the slides, should be CCW, left turn 
+		HullPoint first = new HullPoint();
+		first.setX(0);
+		first.setY(0);
+		
+		HullPoint second = new HullPoint();
+		second.setX(100);
+		second.setY(50);
+		
+		HullPoint third = new HullPoint();
+		third.setX(50);
+		third.setY(100);
+		
+		assertEquals(false, hull.clockwiseOrCollinear(first, second, third));
+		
+		
 	}
 	
 	

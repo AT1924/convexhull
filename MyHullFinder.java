@@ -24,8 +24,10 @@ public class MyHullFinder implements ConvexHullFinder {
 
 	private CircularTree<Angle, HullPoint> _hull;
 
+
 	private String _imagePath;
 	private HullPoint _anchor;
+
 
 	public MyHullFinder(String imagePath) {
 		/*
@@ -37,7 +39,6 @@ public class MyHullFinder implements ConvexHullFinder {
 		_hull = new CircularTree<Angle, HullPoint>(new AngleComparator());
 		_imagePath = imagePath;
 
-		// TODO initalize any other instance variables you use
 
 	}
 
@@ -148,6 +149,7 @@ public class MyHullFinder implements ConvexHullFinder {
 		// if less than three points currently in hull, anchor is first point
 		if (_hull.size() == 0) {
 			_anchor = vertex;
+			
 		}
 
 		// if more than two, use average of first three points in hull
@@ -166,14 +168,14 @@ public class MyHullFinder implements ConvexHullFinder {
 			_anchor.setX((int) x);
 			_anchor.setY((int) y);
 
-			// recalculates the angle of the points with respect to new anchor
+			// recalculates and reinserts the angle of the points with respect to new anchor
 			Entry<Angle, HullPoint> firstEntry = _hull.first();
-			Entry<Angle, HullPoint> secondEntry = _hull.first();
-			// there probably is a better way to do this than to delete the
-			// entries
+			Entry<Angle, HullPoint> secondEntry = _hull.after(firstEntry);
+			
+			// should I just remove the angle here instead?
 			_hull.remove(firstEntry);
 			_hull.remove(secondEntry);
-			// test that _hull is empty here
+			
 			if (calcAngle(firstEntry.getValue()).compareTo(calcAngle(secondEntry.getValue())) <= 0) {
 				_hull.insert(calcAngle(firstEntry.getValue()), firstEntry.getValue());
 				_hull.insert(calcAngle(secondEntry.getValue()), secondEntry.getValue());
@@ -240,6 +242,7 @@ public class MyHullFinder implements ConvexHullFinder {
 	public boolean clockwiseOrCollinear(HullPoint first, HullPoint second, HullPoint third) {
 		// orientation test, if counterclockwise x1-y1 == 1, -1 for clockwise
 		// and 0 for collinear
+		
 		int x1 = (second.getX() - first.getX()) * (third.getY() - first.getY());
 		int y1 = (second.getY() - first.getY()) * (third.getX() - first.getX());
 		if ((x1 - y1) > 0) {
@@ -296,6 +299,15 @@ public class MyHullFinder implements ConvexHullFinder {
 		//
 		// Angle angle1 = new Angle()
 		return true;
+	}
+	
+	// method to get _anchor for testing purposes
+	public HullPoint get_anchor() {
+		return _anchor;
+	}
+	// method to get _hull for testing purposes
+	public CircularTree<Angle, HullPoint> get_hull() {
+		return _hull;
 	}
 
 }
