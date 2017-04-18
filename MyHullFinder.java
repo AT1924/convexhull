@@ -121,22 +121,29 @@ public class MyHullFinder implements ConvexHullFinder {
 			// //delete middle point
 			// }
 
-			if (!isCounterClockwise(prev2.getValue(), prev1.getValue(), latest.getValue())) {
-				// remove middle point
 
-				// keep removing middle point
+			// while last point is collinear or clockwise from penultimate point
+			while ((clockwiseOrCollinear(prev2.getValue(), prev1.getValue(), latest.getValue())) && _hull.size() > 3) {
+				// remove middle point
+				_hull.remove(prev1);
+				// keep removing middle point while clockwiseOrCollinear
+				prev1 = prev2;
+				prev2 = _hull.before(prev2);
 			}
 
-			// repeat until no points removed, or only 3 points left in hull
 			updateHull(_hull.last().getValue());
 		}
 	}
 
-	public boolean isCounterClockwise(HullPoint first, HullPoint second, HullPoint third) {
-		if (orientation(first, second, third) == 1) {
-			return true;
-		} else {
+	public boolean clockwiseOrCollinear(HullPoint first, HullPoint second, HullPoint third) {
+		// orientation test, if counterclockwise x1-y1 == 1, -1 for clockwise
+		// and 0 for collinear
+		int x1 = (second.getX() - first.getX()) * (third.getY() - first.getY());
+		int y1 = (second.getY() - first.getY()) * (third.getX() - first.getX());
+		if ((x1 - y1) > 0) {
 			return false;
+		} else {
+			return true;
 		}
 	}
 
